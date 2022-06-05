@@ -234,10 +234,33 @@ $(function () {
         }
     };
 
+    
     var resetNextSlideTimer = function () {
         clearTimeout(rp.session.nextSlideTimeoutId);
         rp.session.nextSlideTimeoutId = setTimeout(autoNextSlide, rp.settings.timeToNextSlide);
+        rp.session.current_timer = rp.settings.timeToNextSlide/1000;
+
+        if(rp.session.timer_interval) clearInterval(rp.session.timer_interval);
+        updateTimerText();
+        rp.session.timer_interval = setInterval(function(){
+            rp.session.current_timer -= 1.0;
+            updateTimerText();
+        }, 1000);
     };
+    
+    var updateTimerText = function(){
+        let num = rp.session.current_timer;
+        if(num < 0){
+            num = "0";
+        }
+        $("#timer").text(num);
+        if(!rp.settings.shouldAutoNextSlide){
+            $(".timerHolder").hide();   
+        }
+        else{
+            $(".timerHolder").show();
+        }
+    }
 
     var updateAutoNext = function () {
         rp.settings.shouldAutoNextSlide = $("#autoNextSlide").is(':checked');
